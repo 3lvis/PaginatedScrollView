@@ -61,6 +61,17 @@ extension RootController: PaginatedScrollViewDataSource {
 }
 ```
 
+## PaginatedScrollViewDelegate
+
+`UIPageViewController` is kind of lame when it comes to knowing exactly when you have switched to the next page or went back to the previous one. That's the main reason why `PaginatedScrollView` exists.
+
+```swift
+protocol PaginatedScrollViewDelegate: class {
+    func paginatedScrollView(paginatedScrollView: PaginatedScrollView, didMoveToIndex index: Int)
+    func paginatedScrollView(paginatedScrollView: PaginatedScrollView, didMoveFromIndex index: Int)
+}
+```
+
 ## Installation
 
 **PaginatedScrollView** is available through [CocoaPods](http://cocoapods.org). To install
