@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name             = "PaginatedScrollView"
   s.summary          = "Paginated UIScrollView, a simple UIPageViewController alternative."
-  s.version          = "0.1.0"
+  s.version          = "0.1.1"
   s.homepage         = "https://github.com/3lvis/PaginatedScrollView"
   s.license          = 'MIT'
   s.author           = { "Elvis Nuñez" => "elvisnunez@me.com" }
