@@ -2,7 +2,7 @@
 
 [![Version](https://img.shields.io/cocoapods/v/PaginatedScrollView.svg?style=flat)](https://cocoapods.org/pods/PaginatedScrollView)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/3lvis/PaginatedScrollView)
-![platforms](https://img.shields.io/badge/platforms-iOS%20%7C%20OS%20X%20%7C%20watchOS%20%7C%20tvOS%20-lightgrey.svg)
+![platforms](https://img.shields.io/badge/platforms-iOS%20%7C%20tvOS%20-lightgrey.svg)
 [![License](https://img.shields.io/cocoapods/l/PaginatedScrollView.svg?style=flat)](https://cocoapods.org/pods/DATAStack)
 
 Simple paginated UIScrollView subclass that supports UIViewControllers as pages. It handles rotation pretty well, too.
