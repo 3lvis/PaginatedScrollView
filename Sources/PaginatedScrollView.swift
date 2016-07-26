@@ -31,8 +31,9 @@ class PaginatedScrollView: UIScrollView {
         self.delegate = self
         self.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
         self.decelerationRate = UIScrollViewDecelerationRateFast
+        self.backgroundColor = UIColor.clearColor()
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

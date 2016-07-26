@@ -1,17 +1,23 @@
 import UIKit
 
 class RootController: UIViewController {
-    let pages = [
-        PageController(color: UIColor.redColor()),
-        PageController(color: UIColor.greenColor()),
-        PageController(color: UIColor.purpleColor())
-    ]
+    var pages: [UIViewController] {
+        let firstController = UIViewController()
+        firstController.view.backgroundColor = UIColor.redColor()
+
+        let secondController = UIViewController()
+        secondController.view.backgroundColor = UIColor.greenColor()
+
+        let thirdController = UIViewController()
+        thirdController.view.backgroundColor = UIColor.purpleColor()
+
+        return [firstController, secondController, thirdController]
+    }
 
     lazy var scrollView: PaginatedScrollView = {
         let view = PaginatedScrollView(frame: self.view.frame, parentController: self, initialPage: 0)
         view.viewDataSource = self
         view.viewDelegate = self
-        view.backgroundColor = UIColor.clearColor()
 
         return view
     }()
