@@ -5,6 +5,11 @@
 ![platforms](https://img.shields.io/badge/platforms-iOS%20%7C%20OS%20X%20%7C%20watchOS%20%7C%20tvOS%20-lightgrey.svg)
 [![License](https://img.shields.io/cocoapods/l/PaginatedScrollView.svg?style=flat)](https://cocoapods.org/pods/DATAStack)
 
+<p align="center">
+  <img src="https://github.com/3lvis/PaginatedScrollView/blob/master/GitHub/demo.gif?raw=true"/>
+</p>
+
+
 
 ## Usage
 
