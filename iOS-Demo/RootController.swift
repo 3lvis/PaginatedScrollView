@@ -3,13 +3,13 @@ import UIKit
 class RootController: UIViewController {
     var pages: [UIViewController] {
         let firstController = UIViewController()
-        firstController.view.backgroundColor = UIColor.redColor()
+        firstController.view.backgroundColor = UIColor.red
 
         let secondController = UIViewController()
-        secondController.view.backgroundColor = UIColor.greenColor()
+        secondController.view.backgroundColor = UIColor.green
 
         let thirdController = UIViewController()
-        thirdController.view.backgroundColor = UIColor.purpleColor()
+        thirdController.view.backgroundColor = UIColor.purple
 
         return [firstController, secondController, thirdController]
     }
@@ -36,20 +36,21 @@ class RootController: UIViewController {
 }
 
 extension RootController: PaginatedScrollViewDataSource {
-    func numberOfPagesInPaginatedScrollView(paginatedScrollView: PaginatedScrollView) -> Int {
+    func numberOfPagesInPaginatedScrollView(_ paginatedScrollView: PaginatedScrollView) -> Int {
         return self.pages.count
     }
 
-    func paginatedScrollView(paginatedScrollView: PaginatedScrollView, controllerAtIndex index: Int) -> UIViewController {
+    func paginatedScrollView(_ paginatedScrollView: PaginatedScrollView, controllerAtIndex index: Int) -> UIViewController {
         return self.pages[index]
     }
 }
 
 extension RootController: PaginatedScrollViewDelegate {
-    func paginatedScrollView(paginatedScrollView: PaginatedScrollView, didMoveToIndex index: Int) {
+    func paginatedScrollView(_ paginatedScrollView: PaginatedScrollView, didMoveToIndex index: Int) {
 
     }
 
-    func paginatedScrollView(paginatedScrollView: PaginatedScrollView, didMoveFromIndex index: Int) {
+    func paginatedScrollView(_ paginatedScrollView: PaginatedScrollView, didMoveFromIndex index: Int) {
+
     }
 }
