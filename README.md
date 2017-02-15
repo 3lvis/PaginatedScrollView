@@ -31,7 +31,7 @@ class RootController: UIViewController {
     }
 
     lazy var scrollView: PaginatedScrollView = {
-        let view = PaginatedScrollView(frame: self.view.frame, parentController: self, initialPage: 0)
+        let view = PaginatedScrollView(frame: view.frame, parentController: self, initialPage: 0)
         view.viewDataSource = self
 
         return view
@@ -40,23 +40,23 @@ class RootController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.view.addSubview(self.scrollView)
+        view.addSubview(scrollView)
     }
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
 
-        self.scrollView.configure()
+        scrollView.configure()
     }
 }
 
 extension RootController: PaginatedScrollViewDataSource {
     func numberOfPagesInPaginatedScrollView(paginatedScrollView: PaginatedScrollView) -> Int {
-        return self.pages.count
+        return pages.count
     }
 
     func paginatedScrollView(paginatedScrollView: PaginatedScrollView, controllerAtIndex index: Int) -> UIViewController {
-        return self.pages[index]
+        return pages[index]
     }
 }
 ```

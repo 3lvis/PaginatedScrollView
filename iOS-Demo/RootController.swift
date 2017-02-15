@@ -25,23 +25,23 @@ class RootController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.view.addSubview(self.scrollView)
+        view.addSubview(scrollView)
     }
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
 
-        self.scrollView.configure()
+        scrollView.configure()
     }
 }
 
 extension RootController: PaginatedScrollViewDataSource {
     func numberOfPagesInPaginatedScrollView(_ paginatedScrollView: PaginatedScrollView) -> Int {
-        return self.pages.count
+        return pages.count
     }
 
     func paginatedScrollView(_ paginatedScrollView: PaginatedScrollView, controllerAtIndex index: Int) -> UIViewController {
-        return self.pages[index]
+        return pages[index]
     }
 }
 
