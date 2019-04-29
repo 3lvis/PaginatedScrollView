@@ -31,7 +31,7 @@ open class PaginatedScrollView: UIScrollView {
         showsVerticalScrollIndicator = false
         delegate = self
         autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        decelerationRate = UIScrollViewDecelerationRateFast
+        decelerationRate = UIScrollView.DecelerationRate.fast
         backgroundColor = UIColor.clear
     }
 
@@ -65,9 +65,9 @@ open class PaginatedScrollView: UIScrollView {
             frame.origin.y = 0
             controller.view.frame = frame
 
-            parentController.addChildViewController(controller)
+            parentController.addChild(controller)
             addSubview(controller.view)
-            controller.didMove(toParentViewController: parentController)
+            controller.didMove(toParent: parentController)
         }
     }
 
