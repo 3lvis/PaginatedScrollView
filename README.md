@@ -68,7 +68,7 @@ extension RootController: PaginatedScrollViewDataSource {
 ```swift
 protocol PaginatedScrollViewDelegate: class {
     func paginatedScrollView(paginatedScrollView: PaginatedScrollView, didMoveToIndex index: Int)
-    func paginatedScrollView(paginatedScrollView: PaginatedScrollView, didMoveFromIndex index: Int)
+    func paginatedScrollView(paginatedScrollView: PaginatedScrollView, willMoveFromIndex index: Int)
 }
 ```
 

@@ -6,8 +6,8 @@ public protocol PaginatedScrollViewDataSource: class {
 }
 
 public protocol PaginatedScrollViewDelegate: class {
+    func paginatedScrollView(_ paginatedScrollView: PaginatedScrollView, willMoveFromIndex index: Int)
     func paginatedScrollView(_ paginatedScrollView: PaginatedScrollView, didMoveToIndex index: Int)
-    func paginatedScrollView(_ paginatedScrollView: PaginatedScrollView, didMoveFromIndex index: Int)
 }
 
 open class PaginatedScrollView: UIScrollView {
@@ -72,7 +72,7 @@ open class PaginatedScrollView: UIScrollView {
         }
     }
 
-    fileprivate func gotoPage(_ page: Int, animated: Bool) {
+    public func gotoPage(_ page: Int, animated: Bool) {
         loadScrollViewWithPage(page - 1)
         loadScrollViewWithPage(page)
         loadScrollViewWithPage(page + 1)
@@ -81,6 +81,27 @@ open class PaginatedScrollView: UIScrollView {
         bounds.origin.x = bounds.size.width * CGFloat(page)
         bounds.origin.y = 0
         scrollRectToVisible(bounds, animated: animated)
+    }
+
+    public func goToNextPage(animated: Bool) {
+        let numPages = viewDataSource?.numberOfPagesInPaginatedScrollView(self) ?? 0
+        let newPage = currentPage + 1
+        if newPage < numPages {
+            viewDelegate?.paginatedScrollView(self, willMoveFromIndex: currentPage)
+            gotoPage(currentPage + 1, animated: animated)
+            viewDelegate?.paginatedScrollView(self, didMoveToIndex: newPage)
+            currentPage = newPage
+        }
+    }
+
+    public func goToPreviousPage(animated: Bool) {
+        let newPage = currentPage - 1
+        if newPage >= 0 {
+            viewDelegate?.paginatedScrollView(self, willMoveFromIndex: currentPage)
+            gotoPage(currentPage - 1, animated: animated)
+            viewDelegate?.paginatedScrollView(self, didMoveToIndex: newPage)
+            currentPage = newPage
+        }
     }
 }
 
@@ -99,7 +120,7 @@ extension PaginatedScrollView: UIScrollViewDelegate {
             let page = Int(floor((contentOffset.x - pageWidth / 2) / pageWidth) + 1)
             if page != currentPage {
                 viewDelegate?.paginatedScrollView(self, didMoveToIndex: page)
-                viewDelegate?.paginatedScrollView(self, didMoveFromIndex: currentPage)
+                viewDelegate?.paginatedScrollView(self, willMoveFromIndex: currentPage)
             }
             currentPage = page
 
