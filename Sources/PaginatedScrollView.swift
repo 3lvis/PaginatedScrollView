@@ -29,10 +29,11 @@ open class PaginatedScrollView: UIScrollView {
         #endif
         showsHorizontalScrollIndicator = false
         showsVerticalScrollIndicator = false
+
         delegate = self
         autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        decelerationRate = UIScrollView.DecelerationRate.fast
-        backgroundColor = UIColor.clear
+        decelerationRate = .fast
+        backgroundColor = .clear
     }
 
     required public init?(coder aDecoder: NSCoder) {
