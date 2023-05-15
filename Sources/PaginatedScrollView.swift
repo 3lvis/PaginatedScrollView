@@ -1,11 +1,11 @@
 import UIKit
 
-public protocol PaginatedScrollViewDataSource: class {
+public protocol PaginatedScrollViewDataSource: AnyObject {
     func numberOfPagesInPaginatedScrollView(_ paginatedScrollView: PaginatedScrollView) -> Int
     func paginatedScrollView(_ paginatedScrollView: PaginatedScrollView, controllerAtIndex index: Int) -> UIViewController
 }
 
-public protocol PaginatedScrollViewDelegate: class {
+public protocol PaginatedScrollViewDelegate: AnyObject {
     func paginatedScrollView(_ paginatedScrollView: PaginatedScrollView, willMoveFromIndex index: Int)
     func paginatedScrollView(_ paginatedScrollView: PaginatedScrollView, didMoveToIndex index: Int)
 }
