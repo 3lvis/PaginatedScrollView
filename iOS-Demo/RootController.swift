@@ -1,5 +1,6 @@
 import UIKit
 
+@available(iOS 16.0, *)
 class RootController: UIViewController {
     lazy var nextButton: UIButton = {
         let button = UIButton(type: .system)
@@ -24,18 +25,22 @@ class RootController: UIViewController {
         return button
     }()
 
-    var pages: [UIViewController] {
-        let firstController = UIViewController()
-        firstController.view.backgroundColor = UIColor.red
+    let clock = ContinuousClock()
 
-        let secondController = UIViewController()
-        secondController.view.backgroundColor = UIColor.green
+    lazy var pages: [UIViewController] = {
+        var pages = [UIViewController]()
 
-        let thirdController = UIViewController()
-        thirdController.view.backgroundColor = UIColor.purple
+        let colorsArray = [UIColor.red, UIColor.green, UIColor.blue,
+                           UIColor.cyan, UIColor.magenta, UIColor.yellow]
 
-        return [firstController, secondController, thirdController]
-    }
+        for _ in 0..<100000 {
+            let controller = UIViewController()
+            controller.view.backgroundColor = colorsArray[Int(arc4random_uniform(UInt32(colorsArray.count)))] as UIColor
+            pages.append(controller)
+        }
+
+        return pages
+    }()
 
     lazy var scrollView: PaginatedScrollView = {
         let view = PaginatedScrollView(frame: self.view.frame, parentController: self, initialPage: 0)
@@ -51,25 +56,27 @@ class RootController: UIViewController {
 
         view.addSubview(nextButton)
         view.addSubview(backButton)
-        if #available(iOS 11.0, *) {
-            NSLayoutConstraint.activate([
-                backButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
-                backButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 234),
-                backButton.heightAnchor.constraint(equalToConstant: 50),
-                backButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 
-                nextButton.bottomAnchor.constraint(equalTo: backButton.topAnchor, constant: -16),
-                nextButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 234),
-                nextButton.heightAnchor.constraint(equalToConstant: 50),
-                nextButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-            ])
-        }
+        NSLayoutConstraint.activate([
+            backButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            backButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 234),
+            backButton.heightAnchor.constraint(equalToConstant: 50),
+            backButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+
+            nextButton.bottomAnchor.constraint(equalTo: backButton.topAnchor, constant: -16),
+            nextButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 234),
+            nextButton.heightAnchor.constraint(equalToConstant: 50),
+            nextButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
     }
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
 
-        scrollView.configure()
+        let result = clock.measure {
+            scrollView.configure()
+        }
+        print(result)
     }
 
     @objc func nextPage() {
@@ -81,6 +88,7 @@ class RootController: UIViewController {
     }
 }
 
+@available(iOS 16.0, *)
 extension RootController: PaginatedScrollViewDataSource {
     func numberOfPagesInPaginatedScrollView(_ paginatedScrollView: PaginatedScrollView) -> Int {
         return pages.count
@@ -91,6 +99,7 @@ extension RootController: PaginatedScrollViewDataSource {
     }
 }
 
+@available(iOS 16.0, *)
 extension RootController: PaginatedScrollViewDelegate {
     func paginatedScrollView(_ paginatedScrollView: PaginatedScrollView, didMoveToIndex index: Int) {
         UIView.animate(withDuration: 0.3) {
