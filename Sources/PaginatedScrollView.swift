@@ -94,6 +94,25 @@ public class PaginatedScrollView: UIView {
             previousViewElement.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
     }
+
+    public func moveToNextPage() {
+        let numberOfPages = dataSource.numberOfPagesInPaginatedScrollView(self)
+        if currentPage < numberOfPages - 1 {
+            currentPage += 1
+            let offsetX = CGFloat(currentPage) * scrollView.frame.width
+            scrollView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
+            notifyWillMoveFromIndex()
+        }
+    }
+
+    public func moveToPreviousPage() {
+        if currentPage > 0 {
+            currentPage -= 1
+            let offsetX = CGFloat(currentPage) * scrollView.frame.width
+            scrollView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
+            notifyWillMoveFromIndex()
+        }
+    }
 }
 
 extension PaginatedScrollView: UIScrollViewDelegate {
@@ -121,7 +140,11 @@ extension PaginatedScrollView: UIScrollViewDelegate {
         }
     }
 
-    private func notifyDidMoveToIndex() {
+    private func notifyWillMoveFromIndex() {
+        delegate?.paginatedScrollView(self, willMoveFromIndex: currentPage)
+    }
+
+    func notifyDidMoveToIndex() {
         let pageWidth = scrollView.frame.size.width
         let page = Int((scrollView.contentOffset.x + pageWidth / 2) / pageWidth)
         if page != currentPage {
