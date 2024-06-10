@@ -14,8 +14,8 @@ public class PaginatedScrollView: UIView {
     private var dataSource: PaginatedScrollViewDataSource
     public weak var delegate: PaginatedScrollViewDelegate?
 
-    fileprivate var shoudEvaluatePageChange = false
-    fileprivate var currentPage: Int = 0
+    private var shoudEvaluatePageChange = false
+    private var currentPage: Int = 0
 
     public init(dataSource: PaginatedScrollViewDataSource) {
         self.dataSource = dataSource
@@ -103,24 +103,30 @@ extension PaginatedScrollView: UIScrollViewDelegate {
 
     public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         shoudEvaluatePageChange = false
+        notifyDidMoveToIndex()
     }
 
     public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        let pageWidth = frame.size.width
-        let page = Int(floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1)
-        if page != currentPage {
-            delegate?.paginatedScrollView(self, didMoveToIndex: currentPage)
-        }
+        notifyDidMoveToIndex()
     }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if shoudEvaluatePageChange {
-            let pageWidth = frame.size.width
-            let page = Int(floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1)
+            let pageWidth = scrollView.frame.size.width
+            let page = Int((scrollView.contentOffset.x + pageWidth / 2) / pageWidth)
             if page != currentPage {
                 delegate?.paginatedScrollView(self, willMoveFromIndex: currentPage)
+                currentPage = page
             }
+        }
+    }
+
+    private func notifyDidMoveToIndex() {
+        let pageWidth = scrollView.frame.size.width
+        let page = Int((scrollView.contentOffset.x + pageWidth / 2) / pageWidth)
+        if page != currentPage {
             currentPage = page
         }
+        delegate?.paginatedScrollView(self, didMoveToIndex: currentPage)
     }
 }
