@@ -24,21 +24,19 @@ class RootController: UIViewController {
         return button
     }()
 
-    lazy var pages: [UIView] = {
-        var pages = [UIView]()
-
-        let colorsArray = [UIColor.red, UIColor.green, UIColor.blue,
-                           UIColor.cyan, UIColor.magenta, UIColor.yellow]
-
-        for _ in 0..<10 {
-            let view = UIView()
-            view.translatesAutoresizingMaskIntoConstraints = false
-            view.backgroundColor = colorsArray[Int(arc4random_uniform(UInt32(colorsArray.count)))] as UIColor
-            pages.append(view)
-        }
-
-        return pages
+    lazy var reloadButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("Reload Pages", for: .normal)
+        button.backgroundColor = .gray
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        button.layer.cornerRadius = 6
+        button.addTarget(self, action: #selector(reloadPages), for: .touchUpInside)
+        return button
     }()
+
+    var pages: [UIView] = []
 
     lazy var scrollView: PaginatedScrollView = {
         let view = PaginatedScrollView(dataSource: self)
@@ -48,6 +46,8 @@ class RootController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        generatePages()
 
         view.addSubview(scrollView)
         NSLayoutConstraint.activate([
@@ -59,6 +59,7 @@ class RootController: UIViewController {
 
         view.addSubview(nextButton)
         view.addSubview(backButton)
+        view.addSubview(reloadButton)
 
         NSLayoutConstraint.activate([
             backButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
@@ -69,7 +70,12 @@ class RootController: UIViewController {
             nextButton.bottomAnchor.constraint(equalTo: backButton.topAnchor, constant: -16),
             nextButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 234),
             nextButton.heightAnchor.constraint(equalToConstant: 50),
-            nextButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            nextButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+
+            reloadButton.bottomAnchor.constraint(equalTo: nextButton.topAnchor, constant: -16),
+            reloadButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 234),
+            reloadButton.heightAnchor.constraint(equalToConstant: 50),
+            reloadButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
 
@@ -79,6 +85,34 @@ class RootController: UIViewController {
 
     @objc func previousPage() {
         scrollView.moveToPreviousPage()
+    }
+
+    @objc func reloadPages() {
+        generatePages()
+        scrollView.reloadData()
+    }
+
+    private func generatePages() {
+        pages = []
+        let colorsArray: [UIColor] = [.red, .green, .blue, .cyan, .magenta, .yellow]
+        let numberOfPages = Int(arc4random_uniform(10)) + 1  // Generates between 1 and 10 pages
+
+        var lastColorIndex: Int?
+
+        for _ in 0..<numberOfPages {
+            var colorIndex: Int
+
+            repeat {
+                colorIndex = Int(arc4random_uniform(UInt32(colorsArray.count)))
+            } while colorIndex == lastColorIndex
+
+            lastColorIndex = colorIndex
+
+            let view = UIView()
+            view.translatesAutoresizingMaskIntoConstraints = false
+            view.backgroundColor = colorsArray[colorIndex]
+            pages.append(view)
+        }
     }
 }
 

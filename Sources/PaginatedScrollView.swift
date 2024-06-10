@@ -21,30 +21,6 @@ public class PaginatedScrollView: UIView {
         self.dataSource = dataSource
         super.init(frame: .zero)
         self.translatesAutoresizingMaskIntoConstraints = false
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    lazy var scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.isPagingEnabled = true
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.delegate = self
-        return scrollView
-    }()
-
-    lazy var contentView: UIView = {
-        let contentView = UIView()
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        return contentView
-    }()
-
-    override public func layoutSubviews() {
-        subviews.forEach { view in
-            view.removeFromSuperview()
-        }
 
         addSubview(scrollView)
         scrollView.addSubview(contentView)
@@ -52,7 +28,6 @@ public class PaginatedScrollView: UIView {
         NSLayoutConstraint.activate([
             scrollView.centerYAnchor.constraint(equalTo: centerYAnchor),
             scrollView.heightAnchor.constraint(equalTo: heightAnchor),
-
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
 
@@ -61,13 +36,42 @@ public class PaginatedScrollView: UIView {
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor)
         ])
+    }
 
-        var previousViewElement: UIView!
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
-        let numberOfSubViews = dataSource.numberOfPagesInPaginatedScrollView(self)
-        for index in 0..<numberOfSubViews {
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.isPagingEnabled = true
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.delegate = self
+        return scrollView
+    }()
+
+    private lazy var contentView: UIView = {
+        let contentView = UIView()
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        return contentView
+    }()
+
+    override public func layoutSubviews() {
+        super.layoutSubviews()
+        self.reloadData()
+    }
+
+    public func reloadData() {
+        contentView.subviews.forEach { $0.removeFromSuperview() }
+
+        currentPage = 0
+        scrollView.setContentOffset(.zero, animated: false)
+        notifyDidMoveToIndex()
+
+        var previousViewElement: UIView?
+        let numberOfPages = dataSource.numberOfPagesInPaginatedScrollView(self)
+        for index in 0..<numberOfPages {
             let view = dataSource.paginatedScrollView(self, viewAtIndex: index)
-
             contentView.addSubview(view)
 
             NSLayoutConstraint.activate([
@@ -76,23 +80,23 @@ public class PaginatedScrollView: UIView {
                 view.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
             ])
 
-            if previousViewElement == nil {
+            if let previousView = previousViewElement {
                 NSLayoutConstraint.activate([
-                    view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor)
+                    view.leadingAnchor.constraint(equalTo: previousView.trailingAnchor)
                 ])
             } else {
                 NSLayoutConstraint.activate([
-                    view.leadingAnchor.constraint(equalTo: previousViewElement.trailingAnchor)
+                    view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor)
                 ])
             }
-
             previousViewElement = view
         }
 
-        // At this point previousViewElement refers to the last subview, that is the one at the bottom.
-        NSLayoutConstraint.activate([
-            previousViewElement.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
-        ])
+        if let lastView = previousViewElement {
+            NSLayoutConstraint.activate([
+                lastView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+            ])
+        }
     }
 
     public func moveToNextPage() {
@@ -101,7 +105,7 @@ public class PaginatedScrollView: UIView {
             currentPage += 1
             let offsetX = CGFloat(currentPage) * scrollView.frame.width
             scrollView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
-            notifyWillMoveFromIndex()
+            delegate?.paginatedScrollView(self, willMoveFromIndex: currentPage)
         }
     }
 
@@ -110,8 +114,17 @@ public class PaginatedScrollView: UIView {
             currentPage -= 1
             let offsetX = CGFloat(currentPage) * scrollView.frame.width
             scrollView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
-            notifyWillMoveFromIndex()
+            delegate?.paginatedScrollView(self, willMoveFromIndex: currentPage)
         }
+    }
+
+    private func notifyDidMoveToIndex() {
+        let pageWidth = scrollView.frame.size.width
+        let page = Int((scrollView.contentOffset.x + pageWidth / 2) / pageWidth)
+        if page != currentPage {
+            currentPage = page
+        }
+        delegate?.paginatedScrollView(self, didMoveToIndex: currentPage)
     }
 }
 
@@ -138,18 +151,5 @@ extension PaginatedScrollView: UIScrollViewDelegate {
                 currentPage = page
             }
         }
-    }
-
-    private func notifyWillMoveFromIndex() {
-        delegate?.paginatedScrollView(self, willMoveFromIndex: currentPage)
-    }
-
-    func notifyDidMoveToIndex() {
-        let pageWidth = scrollView.frame.size.width
-        let page = Int((scrollView.contentOffset.x + pageWidth / 2) / pageWidth)
-        if page != currentPage {
-            currentPage = page
-        }
-        delegate?.paginatedScrollView(self, didMoveToIndex: currentPage)
     }
 }
