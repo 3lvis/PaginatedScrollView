@@ -100,19 +100,7 @@ public protocol PaginatedScrollViewDelegate: AnyObject {
 
 ## Installation
 
-**PaginatedScrollView** is available through [CocoaPods](http://cocoapods.org). To install
-it, simply add the following line to your Podfile:
-
-```ruby
-pod 'PaginatedScrollView'
-```
-
-**PaginatedScrollView** is also available through [Carthage](https://github.com/Carthage/Carthage). To install
-it, simply add the following line to your Cartfile:
-
-```ruby
-github "3lvis/PaginatedScrollView"
-```
+`PaginatedScrollView` is available through Swift Package Manager.
 
 ## License
 
@@ -120,4 +108,4 @@ github "3lvis/PaginatedScrollView"
 
 ## Author
 
-Elvis Nuñez, [@3lvis](https://twitter.com/3lvis)
+Elvis Nunez, [@3lvis](https://twitter.com/3lvis)
