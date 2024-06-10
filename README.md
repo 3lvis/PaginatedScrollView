@@ -17,48 +17,74 @@ Simple paginated UIScrollView subclass that supports UIViewControllers as pages.
 import UIKit
 
 class RootController: UIViewController {
-    var pages: [UIViewController] {
-        let firstController = UIViewController()
-        firstController.view.backgroundColor = UIColor.redColor()
-
-        let secondController = UIViewController()
-        secondController.view.backgroundColor = UIColor.greenColor()
-
-        let thirdController = UIViewController()
-        thirdController.view.backgroundColor = UIColor.purpleColor()
-
-        return [firstController, secondController, thirdController]
-    }
+    var pages: [UIView] = []
 
     lazy var scrollView: PaginatedScrollView = {
-        let view = PaginatedScrollView(frame: view.frame, parentController: self, initialPage: 0)
-        view.viewDataSource = self
-
+        let view = PaginatedScrollView(dataSource: self)
+        view.delegate = self
         return view
     }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        setupPages()
+
         view.addSubview(scrollView)
+        NSLayoutConstraint.activate([
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
 
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
+    private func setupPages() {
+        let firstPage = UIView()
+        firstPage.backgroundColor = .red
+        pages.append(firstPage)
 
-        scrollView.configure()
+        let secondPage = UIView()
+        secondPage.backgroundColor = .green
+        pages.append(secondPage)
+
+        let thirdPage = UIView()
+        thirdPage.backgroundColor = .blue
+        pages.append(thirdPage)
     }
 }
 
 extension RootController: PaginatedScrollViewDataSource {
-    func numberOfPagesInPaginatedScrollView(paginatedScrollView: PaginatedScrollView) -> Int {
+    func numberOfPagesInPaginatedScrollView(_ paginatedScrollView: PaginatedScrollView) -> Int {
         return pages.count
     }
 
-    func paginatedScrollView(paginatedScrollView: PaginatedScrollView, controllerAtIndex index: Int) -> UIViewController {
+    func paginatedScrollView(_ paginatedScrollView: PaginatedScrollView, viewAtIndex index: Int) -> UIView {
         return pages[index]
     }
 }
+
+extension RootController: PaginatedScrollViewDelegate {
+    func paginatedScrollView(_ paginatedScrollView: PaginatedScrollView, didMoveToIndex index: Int) {
+        print("Did move to page \(index)")
+    }
+
+    func paginatedScrollView(_ paginatedScrollView: PaginatedScrollView, willMoveFromIndex index: Int) {
+        print("Will move from page \(index)")
+    }
+}
+```
+
+## Methods
+```swift
+// Reloads all pages.
+public func reloadData()
+
+// Moves to the next page.
+public func moveToNextPage()
+
+// Moves to the previous page.
+public func moveToPreviousPage()
 ```
 
 ## PaginatedScrollViewDelegate
@@ -66,9 +92,9 @@ extension RootController: PaginatedScrollViewDataSource {
 `UIPageViewController` is kind of lame when it comes to knowing exactly when you have switched to the next page or went back to the previous one. That's the main reason why `PaginatedScrollView` exists.
 
 ```swift
-protocol PaginatedScrollViewDelegate: class {
-    func paginatedScrollView(paginatedScrollView: PaginatedScrollView, didMoveToIndex index: Int)
-    func paginatedScrollView(paginatedScrollView: PaginatedScrollView, willMoveFromIndex index: Int)
+public protocol PaginatedScrollViewDelegate: AnyObject {
+    func paginatedScrollView(_ paginatedScrollView: PaginatedScrollView, willMoveFromIndex index: Int)
+    func paginatedScrollView(_ paginatedScrollView: PaginatedScrollView, didMoveToIndex index: Int)
 }
 ```
 
